@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Team Milestones</title>
+  <style>
+    body {
+      background: #111;
+      color: #fff;
+      font-family: Arial, sans-serif;
+      padding: 40px;
+    }
+    h1 { font-size: 48px; }
+    h2 { font-size: 32px; margin-top: 40px; }
+    .person { font-size: 26px; margin: 8px 0; }
+  </style>
+</head>
+<body>
+
+<h1>Team Milestones</h1>
+
+<h2>🎂 Birthdays Today</h2>
+<div id="birthdays"></div>
+
+<h2>🎉 Work Anniversaries This Month</h2>
+<div id="anniversaries"></div>
+
+<script>
+fetch('employees.json')
+  .then(r => r.json())
+  .then(data => {
+    const today = new Date();
+    const month = today.getMonth();
+    const day = today.getDate();
+    const year = today.getFullYear();
+
+    let b = document.getElementById('birthdays');
+    let a = document.getElementById('anniversaries');
+
+    let hasB = false;
+    let hasA = false;
+
+    data.forEach(p => {
+      const dob = new Date(p.dob);
+      const hire = new Date(p.hire_date);
+
+      if (dob.getMonth() === month && dob.getDate() === day) {
+        b.innerHTML += `<div class="person">${p.name}</div>`;
+        hasB = true;
+      }
+
+      if (hire.getMonth() === month) {
+        const yrs = year - hire.getFullYear();
+        if (yrs > 0) {
+          a.innerHTML += `<div class="person">${p.name} – ${yrs} years</div>`;
+          hasA = true;
+        }
+      }
+    });
+
+    if (!hasB) b.innerHTML = "<div class='person'>No birthdays today</div>";
+    if (!hasA) a.innerHTML = "<div class='person'>No anniversaries this month</div>";
+  });
+</script>
+
+</body>
+</html>
